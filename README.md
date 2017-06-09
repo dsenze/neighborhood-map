@@ -6,7 +6,7 @@
 
 # Overview
 ## All vegan resturants in the :heart: of new york. 
-Vegan2map uses primarly google API to render a map and markers. 
+Vegan2map render a googlemap with markers. 
 
 Google PlacesService search for a hardcoded location "new york" and return places around this radius.
 
