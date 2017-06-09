@@ -4,6 +4,17 @@ Udacity - Front-End Web Developer Course - project 5
 
 
 # Overview
+### view all vegan resturants in the heart of new york. 
+Vegan2map uses primarly google API to render a map and markers. 
+
+Google PlacesService search for a hardcoded location "new york" and return places around this radius.
+
+Vegan2map presents googles result on Vegan resturants in middle of new york. 
+
+User can click on resturants(markers) and read more information. Information about resturants comes from a third-party source (foursquare). 
+
+![Alt text](/img/vegan2map_marker.PNG?raw=true "marker with infowindow popup")
+
 
 # Installation
 
