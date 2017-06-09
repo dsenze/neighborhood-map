@@ -22,7 +22,7 @@ https://dsenze.github.io/vegan2map/
 
 
 # Installation
-prereq: node.js and grunt. view more at: https://gruntjs.com/getting-started
+**pre requirements:** node.js and grunt. view more at: https://gruntjs.com/getting-started
 
 ### 1. download neighborhood-map project to your computer.
 ### 2. open node.js console and navigate to project root catalog.
