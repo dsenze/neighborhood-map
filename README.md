@@ -21,6 +21,15 @@ https://dsenze.github.io/vegan2map/
 
 
 # Installation
+prereq: node.js and grunt. view more at: https://gruntjs.com/getting-started
+
+### 1. download neighborhood-map project to your computer.
+### 2. open node.js console and navigate to project root catalog.
+### 3. run command : **npm install** (to download and install all req. Grunt Modules). 
+### 3. after installation succuss. run commmand : **grunt** and enter.
+grunt will run predefined automation task and verifies JShint runs without errors. If no error occurs. Grunt minimize css and js and removes all comments and saves the production ready code in \dist.
+### 5. start application. dist/index.html.
+## Enjoy!
 
 
 
