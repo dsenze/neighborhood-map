@@ -15,13 +15,13 @@ User can click on resturants(markers) and read more information. Information abo
 
 ![Alt text](/img/vegan2map_marker.PNG?raw=true "marker with infowindow popup")
 
+### Live demo
+
+https://dsenze.github.io/vegan2map/
+
 
 # Installation
 
-
-# Live demo
-
-https://dsenze.github.io/vegan2map/
 
 
 
