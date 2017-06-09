@@ -1,15 +1,16 @@
 # neighborhood-map (vegan2map)
-Udacity - Front-End Web Developer Course - project 5
+## Udacity - Front-End Web Developer Course - project 5
+### knockout.js and googlemap api
 
 
 
 # Overview
-## All vegan resturants in the heart of new york. 
+## All vegan resturants in the :heart: of new york. 
 Vegan2map uses primarly google API to render a map and markers. 
 
 Google PlacesService search for a hardcoded location "new york" and return places around this radius.
 
-Vegan2map presents googles result on Vegan resturants in middle of new york. 
+Vegan2map shows googles Places Service 'vegan resturants' result in centre of new york.
 
 User can click on resturants(markers) and read more information. Information about resturants comes from a third-party source (foursquare). 
 
