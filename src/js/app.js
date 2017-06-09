@@ -1,6 +1,5 @@
 /**                       CITY MODEL
  *
- *               city locations properties (lat and lng).
  */
 var City = function(lat, lng) {
     this.lat = lat;
@@ -9,11 +8,10 @@ var City = function(lat, lng) {
 
 /**                        GOOGLE MODEL
  *
- *                    google map and markers
  */
 var Google = function() {
     var self = this;
-    this.map;
+    this.map = '';
     this.markerList = [];
     this.addmarker = function(resturant) {
         this.markerList.push(resturant);
@@ -23,7 +21,6 @@ var Google = function() {
 
 /**                         RESTURANT MODEL
  *
- *              all properties needed for rendering a resturant.
  */
 var Resturant = function(name, marker, info, rating, locationImg, infoWindow, phone, homepage, category) {
     this.name = name;
@@ -48,8 +45,8 @@ var Resturant = function(name, marker, info, rating, locationImg, infoWindow, ph
 var AppViewModel = function() {
     var self = this;
     this.currentCity = ko.observable('');
-    this.newcity = ('new york'); /**TODO: make this dynamical with a knockout searchfield. So user can change address.*/
-    this.bounds;
+    this.newcity = ('new york'); /**TODO: make this dynamical with a new knockout searchfield. So user can change address. for now feel free to enter your own city here manually :) */
+    this.bounds = '';
     this.resturantList = ko.observableArray();
     this.searchText = ko.observable('');
     this.errorForsquare = false;
@@ -71,9 +68,10 @@ var AppViewModel = function() {
                     obj.marker.setAnimation(google.maps.Animation.BOUNCE);
                     $('.filter-map-content').hide();
                     $('.menu-button').show();
+                    $('.responsive-menu').hide();
                     $('.responsive-menu').removeClass('expand');
-                }
-            });
+                }; // jshint ignore:line
+            }); // jshint ignore:line
             return self.resturantList();
         } else {
             /** if searchText contains something
@@ -90,7 +88,7 @@ var AppViewModel = function() {
 
                 }
 
-            })
+            });
 
         }
     });
@@ -137,8 +135,9 @@ var AppViewModel = function() {
      * 
      */
     this.apiFourSquare = function FourSquare(resturant, lat, lng, resturantname) {
-        var fs = 'https://api.FourSquare.com/v2/venues/search?client_id=EDO0PU442DM5XJU3RGBJXJDOVLHTHRNJGMDQACDEFR32WHTR&client_secret=3UNC4A1BANUZHB4H0SDHZQOGDNQORSI2MGNIYXLVSMRZFYC4&v=20150321&ll=' + lat + ',' + lng + '&query=' + resturantname + '&limit=1'
-        $.getJSON(fs).done(function(result) {
+        var secret = "3UNC4A1BANUZHB4H0SDHZQOGDNQORSI2MGNIYXLVSMRZFYC4&v=20150321&ll";
+        var fsurl = 'https://api.FourSquare.com/v2/venues/search?client_id=EDO0PU442DM5XJU3RGBJXJDOVLHTHRNJGMDQACDEFR32WHTR&client_secret=' + secret + '=' + lat + ',' + lng + '&query=' + resturantname + '&limit=1';
+        $.getJSON(fsurl).done(function(result) {
             var phone, homepage, category;
             /** if result property does not exist. catch and save variable as undefined */
             try { phone = result.response.venues[0].contact.formattedPhone; } catch (err) {
@@ -151,15 +150,15 @@ var AppViewModel = function() {
                 homepage = undefined;
             }
 
-            self.apicallbFourSquare(resturant, phone, category, homepage)
+            self.apicallbFourSquare(resturant, phone, category, homepage);
         }).fail(function(jqxhr, textStatus, error) {
             if (self.errorForsquare !== true) {
                 /**self.errorForsquare is used to notify user only once about API Failure instead of every object*/
                 self.errorForsquare = true;
-                alert('issue getting FourSquare data. Resturants will be missing FourSquare data')
+                alert('issue getting FourSquare data. Error: ' + textStatus + error);
             }
         });
-    }
+    };
 
     /**
      * @description  Callback Function will Update resturant object and infowindow with forSquare data.
@@ -172,7 +171,7 @@ var AppViewModel = function() {
     this.apicallbFourSquare = function FourSquareResponse(resturant, phone, category, homepage) {
         resturant.updatefourSquareData(self.removeUndefined(phone), self.removeUndefined(homepage), self.removeUndefined(category));
         self.updateInfoWindow(resturant);
-    }
+    };
 
     /**                            APP HELP FUNCTIONS
      *
@@ -186,9 +185,9 @@ var AppViewModel = function() {
     this.updateInfoWindow = function updateInfoWindow(resturant) {
         var hp;
         if (resturant.fourSquareData[0].homepage === 'n/a') {
-            var hp = '<p><strong>homepage : </strong>n/a</p>';
+            hp = '<p><strong>homepage : </strong>n/a</p>';
         } else {
-            var hp = '<p><strong>homepage : </strong><a href="' + resturant.fourSquareData[0].homepage + '">' + resturant.fourSquareData[0].homepage + '</p>';
+            hp = '<p><strong>homepage : </strong><a href="' + resturant.fourSquareData[0].homepage + '">' + resturant.fourSquareData[0].homepage + '</p>';
         }
 
         var content = '<div class="content"><h1>' + resturant.name + '</h1>' + '<p><strong>Rating: </strong>' + resturant.rating +
@@ -210,7 +209,7 @@ var AppViewModel = function() {
      */
     this.addFSinfo = function() {
         ko.utils.arrayForEach(self.resturantList() || [], function(item) {
-            self.apiFourSquare(item, item.marker.getPosition().lat(), item.marker.getPosition().lng(), item.name)
+            self.apiFourSquare(item, item.marker.getPosition().lat(), item.marker.getPosition().lng(), item.name);
 
         });
 
@@ -219,52 +218,87 @@ var AppViewModel = function() {
     /** verify if string startswith startswith, return true or false */
     this.stringStartsWith = function(string, startsWith) {
         string = string || '';
-        if (startsWith.length > string.length)
+        if (startsWith.length > string.length) {
             return false;
-        return string.substring(0, startsWith.length) === startsWith;
+        } else {
+            return string.substring(0, startsWith.length) === startsWith;
+        }
+
     };
 
     this.removeUndefined = function(object) {
         if (object === undefined) {
-            return 'n/a'
+            return 'n/a';
         } else {
-            return object
+            return object;
         }
     };
 
     /**resize map to fit bounds */
     this.responsiveMap = function(width) {
         self.google.map.fitBounds(self.bounds);
-    }
+    };
 
+    this.jqueryBindings = function() {
+        /** jquery adds eventlisteners to buttons and solve an responsive mobile issue regarding resizing map.*/
+        $('.menu-button').click(function() {
+            $('.filter-map').show();
+            $('.responsive-menu').toggleClass('expand');
+            $('.menu-button').hide();
+        });
+        $('.close-button').click(function() {
+            $('.filter-map').hide();
+            $('.menu-button').show();
+            $('.responsive-menu').removeClass('expand');
+        });
+        /** resize window with timeout (if not used application will send API requests x 1000 and block account from API requests) */
+        /** Thanks to this thread, https://stackoverflow.com/questions/2854407/javascript-jquery-window-resize-how-to-fire-after-the-resize-is-completed */
+        $(window).bind('resize', function(e) {
+            window.resizeEvt; // jshint ignore:line
+            $(window).resize(function() {
+                clearTimeout(window.resizeEvt);
+                window.resizeEvt = setTimeout(function() {
+                    /** send viewport width and center map with responsiveMap function. */
+                    var viewportWidth = $(window).width();
+                    self.responsiveMap(viewportWidth);
+                }, 500);
+            });
+        });
+
+    };
     //** newcity has to be decoded before program starts, geocode newcity location and then start init()*/
     this.apiGeocodeAddress(this.newcity, function callback(results, status) {
         try {
             self.currentCity = new City(results[0].geometry.location.lat(), results[0].geometry.location.lng());
         } catch (err) {
-            alert('Error loading GoogleMap. Address could not be geocoded.')
+            alert('Error loading GoogleMap. Address could not be geocoded.');
         }
         init();
-    })
+    });
 
-    /** INIT() starts from this.apiGeoCodeAddress function. */
+    /** init() starts from this.apiGeoCodeAddress function. */
     function init() {
         try {
-            self.google = new Google()
+            self.google = new Google();
             self.google.map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 10,
                 center: self.currentCity,
                 // style found at snazzy maps: https://snazzymaps.com/style/15883/green-canvas
                 styles: [{ "featureType": "all", "elementType": "geometry", "stylers": [{ "color": "#8dc04a" }] }, { "featureType": "all", "elementType": "labels.text.fill", "stylers": [{ "gamma": 0.01 }, { "lightness": 20 }] }, { "featureType": "all", "elementType": "labels.text.stroke", "stylers": [{ "saturation": -31 }, { "lightness": -33 }, { "weight": 2 }, { "gamma": 0.8 }] }, { "featureType": "all", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "landscape", "elementType": "geometry", "stylers": [{ "lightness": 30 }, { "saturation": 30 }] }, { "featureType": "poi", "elementType": "geometry", "stylers": [{ "saturation": 20 }] }, { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "lightness": 20 }, { "saturation": -20 }] }, { "featureType": "road", "elementType": "geometry", "stylers": [{ "lightness": 10 }, { "saturation": -30 }] }, { "featureType": "road", "elementType": "geometry.stroke", "stylers": [{ "saturation": 25 }, { "lightness": 25 }] }, { "featureType": "water", "elementType": "all", "stylers": [{ "lightness": -20 }] }]
-            })
+            });
 
         } catch (err) {
-            $('#map-error').text('GoogleMap could not be loaded')
-            alert('could not load googlemap')
+            $('#map-error').text('GoogleMap could not be loaded');
+            alert('could not load googlemap with error : ' + err);
         }
 
         /** Take place information from placesService and save it to resturantList as Resturant Objects. */
         self.apiGetPlaces(self.currentCity, self.google.map, function callback(results, status) {
+            if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                alert('Google Places ServiceStatus Error :' + status);
+                return;
+            }
+
             self.bounds = new google.maps.LatLngBounds();
             var infoWindow = new google.maps.InfoWindow();
 
@@ -277,8 +311,8 @@ var AppViewModel = function() {
                     animation: google.maps.Animation.DROP
                 }));
                 /** save url for street picture to use in infoWindow. */
-                var locationUrl = 'https://maps.googleapis.com/maps/api/streetview?size=300x150&location=' + item.geometry.location.lat() + ',' + item.geometry.location.lng() + '&heading=151.78&pitch=-0.76&key=AIzaSyAMr4cPC9-zPpNLCk1yngw1ijaFQ2z-rxM'
-                var info = '<div class="content"><h1>' + item.name + '</h1>' + '<p><strong>Rating: </strong>' + item.rating + '</p>' + '<img src="' + locationUrl + '">'
+                var locationUrl = 'https://maps.googleapis.com/maps/api/streetview?size=300x150&location=' + item.geometry.location.lat() + ',' + item.geometry.location.lng() + '&heading=151.78&pitch=-0.76&key=AIzaSyAMr4cPC9-zPpNLCk1yngw1ijaFQ2z-rxM';
+                var info = '<div class="content"><h1>' + item.name + '</h1>' + '<p><strong>Rating: </strong>' + item.rating + '</p>' + '<img src="' + locationUrl + '">';
                 self.resturantList.push(new Resturant(item.name, marker, info, self.removeUndefined(item.rating), locationUrl, infoWindow, 'NA', 'NA', 'NA'));
 
                 /** add listeners for each result. */
@@ -304,37 +338,12 @@ var AppViewModel = function() {
 
             /**add foursquare information to resturants. */
             self.addFSinfo();
+            self.jqueryBindings();
         });
     } /** init end */
-}
+};
 
-function initialize() {
-    /** 
-     * start application when google library script been loaded.
-     * jquery adds eventlisteners to buttons and solve an responsive mobile issue regarding resizing map. */
-    $('.menu-button').click(function() {
-        $('.filter-map').show();
-        $('.responsive-menu').toggleClass('expand');
-        $('.menu-button').hide();
-    });
-    $('.close-button').click(function() {
-        $('.filter-map').hide();
-        $('.menu-button').show();
-        $('.responsive-menu').removeClass('expand');
-    });
-    /** resize window with timeout (if not used application will send API requests x 1000 and block account from API requests) */
-    /** Thanks to this thread, https://stackoverflow.com/questions/2854407/javascript-jquery-window-resize-how-to-fire-after-the-resize-is-completed */
-    $(window).bind('resize', function(e) {
-        window.resizeEvt;
-        $(window).resize(function() {
-            clearTimeout(window.resizeEvt);
-            window.resizeEvt = setTimeout(function() {
-                /** send viewport width and center map with responsiveMap function. */
-                var viewportWidth = $(window).width();
-                app.responsiveMap(viewportWidth);
-            }, 500);
-        });
-    });
-    var app;
-    ko.applyBindings(app = new AppViewModel);
+/** START APPLICATION */
+function startVegan2map() {
+    ko.applyBindings(app = new AppViewModel());
 }

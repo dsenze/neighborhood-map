@@ -1,0 +1,4 @@
+jsDistDir: dist/js/
+jsSrcDir: src/js/
+cssDistDir: dist/css/
+cssSrcDir: src/css/
