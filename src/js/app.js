@@ -1,3 +1,27 @@
+/**
+ * googleError() inform user if error loading map
+ * function does not pick up API KEY errors. 
+ */
+function googleError() {
+    alert("failed to load google map!");
+}
+
+/**
+ * found this great solution on stackoverflow https://stackoverflow.com/questions/3677783/is-it-possible-to-catch-exceptions-thrown-in-a-javascript-async-callback/43758757#43758757
+ * which pickups API key errors. Important error message because the key will expire in future.
+ * Thanks to Karan Bhandari
+ */
+if (window.console && console.error) {
+    var old = console.error;
+    console.error = function() {
+        if (arguments[0].indexOf('Google Maps API error') != -1) {
+            alert('Bad Google API Key ' + arguments[0]);
+        }
+        Array.prototype.unshift.call(arguments);
+
+        old.apply(this, arguments);
+    };
+}
 /**                       CITY MODEL
  *
  */
