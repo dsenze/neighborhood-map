@@ -98,10 +98,14 @@ var AppViewModel = function() {
 
                     })();
                     obj.marker.setAnimation(google.maps.Animation.BOUNCE);
-                    $('.filter-map-content').hide();
-                    $('.menu-button').show();
-                    $('.responsive-menu').hide();
-                    $('.responsive-menu').removeClass('expand');
+                    /**
+                     *   Do not hide menu 
+                     *   if you want Mobile Expierence uncomment code below. Menu will disapear when user select a choice from list. more space for mobile users when selecting resturant.
+                     */
+                    // $('.filter-map-content').hide();
+                    // $('.menu-button').show();
+                    // $('.responsive-menu').hide();
+                    // $('.responsive-menu').removeClass('expand');
                 }; // jshint ignore:line
             }); // jshint ignore:line
             return self.resturantList();
