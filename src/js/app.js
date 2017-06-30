@@ -65,6 +65,14 @@ var AppViewModel = function() {
                     obj.infoWindow.setContent(obj.info);
                     obj.infoWindow.open(self.google.map, obj.marker);
                     self.google.map.setCenter(obj.marker.getPosition());
+                    /** stop animation of all markers before adding animation to selected marker */
+                    (function() {
+                        console.log(self.google.markerList[0]);
+                        for (var i = 0; i < self.google.markerList.length; i++) {
+                            self.google.markerList[i].setAnimation(null);
+                        }
+
+                    })();
                     obj.marker.setAnimation(google.maps.Animation.BOUNCE);
                     $('.filter-map-content').hide();
                     $('.menu-button').show();
@@ -234,6 +242,7 @@ var AppViewModel = function() {
         }
     };
 
+
     /**resize map to fit bounds */
     this.responsiveMap = function(width) {
         self.google.map.fitBounds(self.bounds);
@@ -317,6 +326,14 @@ var AppViewModel = function() {
 
                 /** add listeners for each result. */
                 google.maps.event.addListener(marker, 'click', function() {
+                    /** stop animation of all markers before adding animation to selected marker */
+                    (function() {
+                        console.log(self.google.markerList[0]);
+                        for (var i = 0; i < self.google.markerList.length; i++) {
+                            self.google.markerList[i].setAnimation(null);
+                        }
+
+                    })();
                     infoWindow.setContent(info);
                     infoWindow.open(self.google.map, this);
                     marker.setAnimation(google.maps.Animation.BOUNCE);
